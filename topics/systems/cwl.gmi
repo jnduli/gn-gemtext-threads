@@ -1,0 +1,62 @@
+# CWL (Common Workflow Language)
+
+## Introduction
+
+CWL is a specification for describing workflows i.e. task A -> task B -> task C.
+
+=> https://www.commonwl.org/ More details on CWL
+
+To set up in guix:
+
+>> guix install cwltool ccwl
+
+By default, `cwltool` takes in yaml files e.g.
+
+```
+# filename: hello_world.cwl
+cwlVersion: v1.2
+
+class: CommandLineTool
+baseCommand: echo
+
+inputs:
+  message:
+    type: string
+    default: "Hello world"
+    inputBinding:
+      position: 1
+
+outputs: []
+```
+
+And running `cwltool hello_world.cwl` gives the result.
+
+`CCWL (Concise Common Workflow Language)` is a Scheme DSL for CWL that is simpler and more consise.
+
+The above example will look like:
+
+```
+(command #:inputs (message #:type string)
+		 #:run "echo" message
+		 #:outputs (printed-message #:type stdout))
+```
+
+And run it using:
+
+>> ccwl compile hello.scm > hello.cwl
+>> cwltool hello.cwl
+
+=> https://ccwl.systemreboot.net/manual/dev/en/ More complex examples for ccwl
+
+## Potential Usage
+
+CWL, Ravanan and Slurm will be the backbone for our asynchronous jobs.
+
+We'll have to build tooling or add features that can complement these like:
+
+- Timeouts for workflows
+- Progress report support
+- Retry mechanisms
+
+=> https://git.systemreboot.net/ravanan/tree/README.md Ravanan
+=> https://slurm.schedmd.com/overview.html Slurm
